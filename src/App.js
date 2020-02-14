@@ -79,7 +79,7 @@ const App = () => {
 		}
 	}, [direction]);
 
-	const run = event => {
+	const onKeyDown = event => {
 		setDirection(mappingKeys[event.key]);
 	};
 
@@ -100,7 +100,7 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<input type="text" ref={inputRef} className="input" onKeyDown={run} />
+			<input type="text" ref={inputRef} className="input" onKeyDown={onKeyDown} />
 
 			<img src={logo} className="img" alt="logo" ref={imgRef} />
 		</div>
