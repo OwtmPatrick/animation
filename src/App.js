@@ -72,7 +72,7 @@ const App = () => {
 		const isDirectionSet = Object.values(mappingKeys).includes(direction);
 
 		if (isDirectionSet) {
-			animate({
+			animateOneStep({
 				duration: 1000,
 				move: moveImg
 			});
@@ -83,10 +83,11 @@ const App = () => {
 		setDirection(mappingKeys[event.key]);
 	};
 
-	const animate = ({duration, move}) => {
+	const animateOneStep = ({duration, move}) => {
 		let start = performance.now();
 
-		requestAnimationFrame(function animate(time) {
+		// use this id for condition animation done
+		const animateID = requestAnimationFrame(function animate(time) {
 			let timeFraction = (time - start) / duration;
 			if (timeFraction > 1) timeFraction = 1;
 
@@ -96,6 +97,8 @@ const App = () => {
 				requestAnimationFrame(animate);
 			}
 		});
+
+		console.log(animateID);
 	};
 
 	return (
