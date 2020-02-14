@@ -1,12 +1,12 @@
-import React, {useState, useRef, useEffect} from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, {useState, useRef, useEffect, useCallback} from 'react';
+import logo from './logo.svg';
+import './App.css';
 
-const styles = {
-	ArrowUp: "top",
-	ArrowRight: "right",
-	ArrowDown: "bottom",
-	ArrowLeft: "left"
+const mappingKeys = {
+	ArrowUp: 'top',
+	ArrowRight: 'right',
+	ArrowDown: 'bottom',
+	ArrowLeft: 'left'
 };
 
 const App = () => {
@@ -14,47 +14,62 @@ const App = () => {
 	const [coords, setCoords] = useState({
 		top: 100,
 		left: 100
-		// right:
 	});
 	const inputRef = useRef(null);
 	const imgRef = useRef(null);
 
-	// console.log(imgRef.current.getBoundingClientRect());
-
 	useEffect(() => {
 		inputRef.current.focus();
-		// need to write coords
-		console.log(imgRef.current.getBoundingClientRect());
 	}, []);
 
 	const moveImg = progress => {
-		// console.log(direction);
+		console.log('start animate');
+		const imgStyle = imgRef.current.style;
 
-		const isPositiveDirection = direction === "left" || direction === "top";
+		switch (direction) {
+			case 'left':
+				imgStyle.left = `${coords.left - progress * 10}px`;
+				setCoords({
+					...coords,
+					left: coords.left - 10
+				});
+				break;
 
-		if (isPositiveDirection) {
-			imgRef.current.style[direction] = `${coords[direction] -
-				progress * 10}px`;
-		} else if (direction === "bottom") {
-			imgRef.current.style.top = `${coords.top + progress * 10}px`;
-		} else if (direction === "right") {
-			imgRef.current.style.left = `${coords.left + progress * 10}px`;
+			case 'top':
+				imgStyle.top = `${coords.top - progress * 10}px`;
+				setCoords({
+					...coords,
+					top: coords.top - 10
+				});
+				break;
+
+			case 'right':
+				imgStyle.left = `${coords.left + progress * 10}px`;
+				setCoords({
+					...coords,
+					left: coords.left + 10
+				});
+				break;
+
+			case 'bottom':
+				imgStyle.top = `${coords.top + progress * 10}px`;
+				setCoords({
+					...coords,
+					top: coords.top + 10
+				});
+				break;
+
+			default:
+				console.log('direction: ', direction);
 		}
 
 		if (progress === 1) {
-			// console.log("done");
-			console.log(imgRef.current.getBoundingClientRect());
-			setCoords({
-				...coords,
-				[direction]: isPositiveDirection
-					? coords[direction] - 10
-					: coords[direction] + 10
-			});
+			console.log('done');
 		}
 	};
 
 	useEffect(() => {
-		const isDirectionSet = Object.values(styles).includes(direction);
+		const isDirectionSet = Object.values(mappingKeys).includes(direction);
 
 		if (isDirectionSet) {
 			animate({
@@ -65,7 +80,7 @@ const App = () => {
 	}, [direction]);
 
 	const run = event => {
-		setDirection(styles[event.key]);
+		setDirection(mappingKeys[event.key]);
 	};
 
 	const animate = ({duration, move}) => {
@@ -85,12 +100,7 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<input
-				type="text"
-				ref={inputRef}
-				className="input"
-				onKeyDown={run}
-			/>
+			<input type="text" ref={inputRef} className="input" onKeyDown={run} />
 
 			<img src={logo} className="img" alt="logo" ref={imgRef} />
 		</div>
