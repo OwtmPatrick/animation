@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import logo from './logo.svg';
+import reduxLogo from './redux-logo.png';
 import './App.css';
 
 const mappingKeys = {
@@ -17,7 +18,7 @@ let coords = {
 const imgSizes = {
 	width: 100,
 	height: 100
-}
+};
 
 const viewportHeight = window.innerHeight;
 const viewportWidth = window.innerWidth;
@@ -25,9 +26,11 @@ const viewportWidth = window.innerWidth;
 const App = () => {
 	const [direction, setDirection] = useState(null);
 	const [isDirectionChanged, setDirectionChanged] = useState(false);
-	
+	const [isShowResult, setShowResult] = useState(false);
+
 	const inputRef = useRef(null);
 	const imgRef = useRef(null);
+	const reduxLogoRef = useRef(null);
 	const animationRef = useRef(null);
 
 	useEffect(() => {
@@ -56,6 +59,21 @@ const App = () => {
 
 	function move() {
 		const imgStyle = imgRef.current.style;
+
+		const {x, y} = imgRef.current.getBoundingClientRect();
+
+		const reduxLogoSizes = reduxLogoRef.current.getBoundingClientRect();
+
+		const xCondition =
+			x + imgSizes.width > reduxLogoSizes.x && x < reduxLogoSizes.x + reduxLogoSizes.width;
+
+		const yCondition =
+			y + imgSizes.height > reduxLogoSizes.y && y < reduxLogoSizes.y + reduxLogoSizes.height;
+
+		if (xCondition && yCondition) {
+			setShowResult(true);
+			return;
+		}
 
 		switch (direction) {
 			case 'left':
@@ -88,7 +106,7 @@ const App = () => {
 						...coords,
 						left: coords.left + 1
 					};
-	
+
 					imgStyle.left = coords.left + 'px';
 				}
 
@@ -100,26 +118,35 @@ const App = () => {
 						...coords,
 						top: coords.top + 1
 					};
-	
+
 					imgStyle.top = coords.top + 'px';
 				}
-				
+
 				break;
 
 			default:
-				console.log('direction: ', direction);
+				break;
 		}
 
 		animationRef.current = requestAnimationFrame(move);
 	}
-
-	console.log(animationRef);
 
 	return (
 		<div className="App">
 			<input type="text" ref={inputRef} className="input" onKeyDown={onKeyDown} />
 
 			<img src={logo} className="img" alt="logo" ref={imgRef} />
+
+			<img src={reduxLogo} className="redux-logo" alt="redux-logo" ref={reduxLogoRef} />
+
+			<div
+				style={{
+					opacity: isShowResult ? 1 : 0,
+					fontSize: 'xxx-large'
+				}}
+			>
+				Nice job, comrade!
+			</div>
 		</div>
 	);
 };
