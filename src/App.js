@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -9,97 +9,111 @@ const mappingKeys = {
 	ArrowLeft: 'left'
 };
 
+let coords = {
+	top: 0,
+	left: 0
+};
+
+const imgSizes = {
+	width: 100,
+	height: 100
+}
+
+const viewportHeight = window.innerHeight;
+const viewportWidth = window.innerWidth;
+
 const App = () => {
 	const [direction, setDirection] = useState(null);
-	const [coords, setCoords] = useState({
-		top: 100,
-		left: 100
-	});
+	const [isDirectionChanged, setDirectionChanged] = useState(false);
+	
 	const inputRef = useRef(null);
 	const imgRef = useRef(null);
+	const animationRef = useRef(null);
 
 	useEffect(() => {
 		inputRef.current.focus();
 	}, []);
 
-	const moveImg = progress => {
-		console.log('start animate');
+	useEffect(() => {
+		const isDirectionSet = Object.values(mappingKeys).includes(direction);
+
+		if (isDirectionSet) {
+			if (isDirectionChanged) {
+				console.log('direction is changed');
+				cancelAnimationFrame(animationRef.current);
+			}
+			move();
+		}
+	}, [direction]);
+
+	const onKeyDown = event => {
+		if (direction === mappingKeys[event.key]) {
+			return;
+		}
+		setDirectionChanged(true);
+		setDirection(mappingKeys[event.key]);
+	};
+
+	function move() {
 		const imgStyle = imgRef.current.style;
 
 		switch (direction) {
 			case 'left':
-				imgStyle.left = `${coords.left - progress * 10}px`;
-				setCoords({
-					...coords,
-					left: coords.left - 10
-				});
+				if (coords.left > 0) {
+					coords = {
+						...coords,
+						left: coords.left - 1
+					};
+
+					imgStyle.left = coords.left + 'px';
+				}
+
 				break;
 
 			case 'top':
-				imgStyle.top = `${coords.top - progress * 10}px`;
-				setCoords({
-					...coords,
-					top: coords.top - 10
-				});
+				if (coords.top > 0) {
+					coords = {
+						...coords,
+						top: coords.top - 1
+					};
+
+					imgStyle.top = coords.top + 'px';
+				}
+
 				break;
 
 			case 'right':
-				imgStyle.left = `${coords.left + progress * 10}px`;
-				setCoords({
-					...coords,
-					left: coords.left + 10
-				});
+				if (coords.left + imgSizes.width < viewportWidth) {
+					coords = {
+						...coords,
+						left: coords.left + 1
+					};
+	
+					imgStyle.left = coords.left + 'px';
+				}
+
 				break;
 
 			case 'bottom':
-				imgStyle.top = `${coords.top + progress * 10}px`;
-				setCoords({
-					...coords,
-					top: coords.top + 10
-				});
+				if (coords.top + imgSizes.height < viewportHeight) {
+					coords = {
+						...coords,
+						top: coords.top + 1
+					};
+	
+					imgStyle.top = coords.top + 'px';
+				}
+				
 				break;
 
 			default:
 				console.log('direction: ', direction);
 		}
 
-		if (progress === 1) {
-			console.log('done');
-		}
-	};
+		animationRef.current = requestAnimationFrame(move);
+	}
 
-	useEffect(() => {
-		const isDirectionSet = Object.values(mappingKeys).includes(direction);
-
-		if (isDirectionSet) {
-			animateOneStep({
-				duration: 1000,
-				move: moveImg
-			});
-		}
-	}, [direction]);
-
-	const onKeyDown = event => {
-		setDirection(mappingKeys[event.key]);
-	};
-
-	const animateOneStep = ({duration, move}) => {
-		let start = performance.now();
-
-		// use this id for condition animation done
-		const animateID = requestAnimationFrame(function animate(time) {
-			let timeFraction = (time - start) / duration;
-			if (timeFraction > 1) timeFraction = 1;
-
-			move(timeFraction);
-
-			if (timeFraction < 1) {
-				requestAnimationFrame(animate);
-			}
-		});
-
-		console.log(animateID);
-	};
+	console.log(animationRef);
 
 	return (
 		<div className="App">
