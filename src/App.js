@@ -25,7 +25,6 @@ const viewportWidth = window.innerWidth;
 
 const App = () => {
 	const [direction, setDirection] = useState(null);
-	const [isDirectionChanged, setDirectionChanged] = useState(false);
 	const [isShowResult, setShowResult] = useState(false);
 
 	const inputRef = useRef(null);
@@ -41,10 +40,7 @@ const App = () => {
 		const isDirectionSet = Object.values(mappingKeys).includes(direction);
 
 		if (isDirectionSet) {
-			if (isDirectionChanged) {
-				console.log('direction is changed');
-				cancelAnimationFrame(animationRef.current);
-			}
+			cancelAnimationFrame(animationRef.current);
 			move();
 		}
 	}, [direction]);
@@ -53,7 +49,6 @@ const App = () => {
 		if (direction === mappingKeys[event.key]) {
 			return;
 		}
-		setDirectionChanged(true);
 		setDirection(mappingKeys[event.key]);
 	};
 
