@@ -1,7 +1,10 @@
 import React, {useState, useRef, useEffect} from 'react';
-import logo from './logo.svg';
-import reduxLogo from './redux-logo.png';
 import './App.css';
+
+const CAR_URL = 'https://clipartart.com/images/car-clipart-gif-1.gif';
+const HOUSE_URL =
+	'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT1-eVOj1Dn5pRt0TIszJDesn-Ijevbm_Cku1w4tZkvpln5ROD7';
+const FIREWORKS_URL = 'https://acegif.com/wp-content/uploads/firework-1.gif';
 
 const mappingKeys = {
 	ArrowUp: 'top',
@@ -15,7 +18,7 @@ let coords = {
 	left: 0
 };
 
-const imgSizes = {
+const carSize = {
 	width: 100,
 	height: 100
 };
@@ -52,7 +55,7 @@ const App = () => {
 		setDirection(mappingKeys[event.key]);
 	};
 
-	function move() {
+	const move = () => {
 		const imgStyle = imgRef.current.style;
 
 		const {x, y} = imgRef.current.getBoundingClientRect();
@@ -60,10 +63,10 @@ const App = () => {
 		const reduxLogoSizes = reduxLogoRef.current.getBoundingClientRect();
 
 		const xCondition =
-			x + imgSizes.width > reduxLogoSizes.x && x < reduxLogoSizes.x + reduxLogoSizes.width;
+			x + carSize.width > reduxLogoSizes.x && x < reduxLogoSizes.x + reduxLogoSizes.width;
 
 		const yCondition =
-			y + imgSizes.height > reduxLogoSizes.y && y < reduxLogoSizes.y + reduxLogoSizes.height;
+			y + carSize.height > reduxLogoSizes.y && y < reduxLogoSizes.y + reduxLogoSizes.height;
 
 		if (xCondition && yCondition) {
 			setShowResult(true);
@@ -96,7 +99,7 @@ const App = () => {
 				break;
 
 			case 'right':
-				if (coords.left + imgSizes.width < viewportWidth) {
+				if (coords.left + carSize.width < viewportWidth) {
 					coords = {
 						...coords,
 						left: coords.left + 1
@@ -108,7 +111,7 @@ const App = () => {
 				break;
 
 			case 'bottom':
-				if (coords.top + imgSizes.height < viewportHeight) {
+				if (coords.top + carSize.height < viewportHeight) {
 					coords = {
 						...coords,
 						top: coords.top + 1
@@ -124,24 +127,28 @@ const App = () => {
 		}
 
 		animationRef.current = requestAnimationFrame(move);
-	}
+	};
 
 	return (
 		<div className="App">
 			<input type="text" ref={inputRef} className="input" onKeyDown={onKeyDown} />
 
-			<img src={logo} className="img" alt="logo" ref={imgRef} />
+			<img
+				src={CAR_URL}
+				className={direction === 'left' ? 'car car__left' : 'car'}
+				alt="car"
+				ref={imgRef}
+			/>
 
-			<img src={reduxLogo} className="redux-logo" alt="redux-logo" ref={reduxLogoRef} />
+			<img src={HOUSE_URL} className="house" alt="house" ref={reduxLogoRef} />
 
-			<div
+			<img
+				src={FIREWORKS_URL}
 				style={{
-					opacity: isShowResult ? 1 : 0,
-					fontSize: 'xxx-large'
+					opacity: isShowResult ? 1 : 0
 				}}
-			>
-				Nice job, comrade!
-			</div>
+				alt="fireworks"
+			/>
 		</div>
 	);
 };
