@@ -1,10 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import './App.css';
 
-const CAR_URL = 'https://clipartart.com/images/car-clipart-gif-1.gif';
-const HOUSE_URL =
-	'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT1-eVOj1Dn5pRt0TIszJDesn-Ijevbm_Cku1w4tZkvpln5ROD7';
-const FIREWORKS_URL = 'https://acegif.com/wp-content/uploads/firework-1.gif';
+import imagesUrls from './images-urls';
 
 const mappingKeys = {
 	ArrowUp: 'top',
@@ -134,19 +131,17 @@ const App = () => {
 			<input type="text" ref={inputRef} className="input" onKeyDown={onKeyDown} />
 
 			<img
-				src={CAR_URL}
+				src={imagesUrls.CAR_URL}
 				className={direction === 'left' ? 'car car__left' : 'car'}
 				alt="car"
 				ref={imgRef}
 			/>
 
-			<img src={HOUSE_URL} className="house" alt="house" ref={reduxLogoRef} />
+			<img src={imagesUrls.HOUSE_URL} className="house" alt="house" ref={reduxLogoRef} />
 
 			<img
-				src={FIREWORKS_URL}
-				style={{
-					opacity: isShowResult ? 1 : 0
-				}}
+				src={imagesUrls.FIREWORKS_URL}
+				className={isShowResult ? 'result' : 'result__hidden'}
 				alt="fireworks"
 			/>
 		</div>

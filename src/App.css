@@ -1,7 +1,5 @@
 .App {
 	position: relative;
-	display: flex;
-	justify-content: center;
 }
 
 .car {
@@ -26,4 +24,14 @@
 	height: 90px;
 	top: 500px;
 	left: 500px;
+}
+
+.result {
+	position: absolute;
+	top: 350px;
+	height: 450px;
+}
+
+.result__hidden {
+	opacity: 0;
 }
