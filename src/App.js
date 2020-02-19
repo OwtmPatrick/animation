@@ -33,6 +33,8 @@ const App = () => {
 	const animationRef = useRef(null);
 
 	useEffect(() => {
+		document.addEventListener('click', () => inputRef.current.focus());
+
 		inputRef.current.focus();
 	}, []);
 
